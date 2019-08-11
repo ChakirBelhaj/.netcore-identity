@@ -118,14 +118,9 @@ namespace Web.Api
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ApiUser", policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol, Constants.Strings.JwtClaims.ApiAccess));
-                options.AddPolicy("EmployeeOnly", policy =>
-                {
-                    policy.RequireAssertion(context =>
-                    {
-                        var d = context.User.Identity.Name;
-                        return context.User.IsInRole("admin");
-                    });
-                });
+                options.AddPolicy("Admin", policy => policy.RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "Admin"));
+                options.AddPolicy("Reader", policy => policy.RequireClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "readeR"));
+
             });
 
             // add identity

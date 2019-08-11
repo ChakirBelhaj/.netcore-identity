@@ -30,7 +30,7 @@ namespace Web.Api.Infrastructure.Data.Repositories
             var identityResult = await _userManager.CreateAsync(appUser, password);
 
             if (!identityResult.Succeeded) return new CreateUserResponse(appUser.Id, false,identityResult.Errors.Select(e => new Error(e.Code, e.Description)));
-          
+
             var user = new User(firstName, lastName, appUser.Id, appUser.UserName);
             _appDbContext.Users.Add(user);
             await _appDbContext.SaveChangesAsync();
@@ -41,7 +41,20 @@ namespace Web.Api.Infrastructure.Data.Repositories
         public async Task<User> FindByName(string userName)
         {
             var appUser = await _userManager.FindByNameAsync(userName);
-            return appUser == null ? null : _mapper.Map(appUser, await GetSingleBySpec(new UserSpecification(appUser.Id)));
+            
+            var user = appUser == null ? null : _mapper.Map(appUser, await GetSingleBySpec(new UserSpecification(appUser.Id)));
+
+            if(user == null)
+            {
+                return null;
+            }
+            else
+            {
+                var roles = await _userManager.GetRolesAsync(appUser);
+                user.Roles = roles.ToList();
+            }
+
+            return user;
         }
 
         public async Task<bool> CheckPassword(User user, string password)

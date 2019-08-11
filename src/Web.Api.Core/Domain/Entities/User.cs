@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using Web.Api.Core.Shared;
 
@@ -13,7 +14,11 @@ namespace Web.Api.Core.Domain.Entities
         public string IdentityId { get; private set; }
         public string UserName { get; private set; } // Required by automapper
         public string Email { get; private set; }
+        public string Middlename { get; set; }
         public string PasswordHash { get; private set; }
+
+        [NotMapped]
+        public List<string> Roles { get; set; }
 
         private readonly List<RefreshToken> _refreshTokens = new List<RefreshToken>();
         public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();

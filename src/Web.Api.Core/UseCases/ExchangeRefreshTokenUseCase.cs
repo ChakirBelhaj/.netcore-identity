@@ -39,7 +39,7 @@ namespace Web.Api.Core.UseCases
 
                 if (user.HasValidRefreshToken(message.RefreshToken))
                 {
-                    var jwtToken = await _jwtFactory.GenerateEncodedToken(user.IdentityId, user.UserName);
+                    var jwtToken = await _jwtFactory.GenerateEncodedToken(user.IdentityId, user.UserName, user);
                     var refreshToken = _tokenFactory.GenerateToken();
                     user.RemoveRefreshToken(message.RefreshToken); // delete the token we've exchanged
                     user.AddRefreshToken(refreshToken, user.Id, ""); // add the new one

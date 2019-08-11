@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Web.Api.Core.Domain.Entities;
 using Web.Api.Core.Dto;
 using Web.Api.Core.Interfaces.Services;
 using Web.Api.Infrastructure.Interfaces;
@@ -22,18 +24,23 @@ namespace Web.Api.Infrastructure.Auth
             ThrowIfInvalidOptions(_jwtOptions);
         }
 
-        public async Task<AccessToken> GenerateEncodedToken(string id, string userName)
+        public async Task<AccessToken> GenerateEncodedToken(string id, string userName, User user)
         {
             var identity = GenerateClaimsIdentity(id, userName);
 
-            var claims = new[]
+            var claims = new List<Claim>()
             {
-                 new Claim(JwtRegisteredClaimNames.Sub, userName),
+                new Claim(JwtRegisteredClaimNames.Sub, userName),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
                  identity.FindFirst(Helpers.Constants.Strings.JwtClaimIdentifiers.Rol),
                  identity.FindFirst(Helpers.Constants.Strings.JwtClaimIdentifiers.Id)
              };
+
+            foreach (var role in user.Roles)
+            {
+                claims.Add(new Claim("role", role));
+            }
 
             // Create the JWT security token and encode it.
             var jwt = new JwtSecurityToken(
@@ -43,8 +50,13 @@ namespace Web.Api.Infrastructure.Auth
                 _jwtOptions.NotBefore,
                 _jwtOptions.Expiration,
                 _jwtOptions.SigningCredentials);
-          
+
             return new AccessToken(_jwtTokenHandler.WriteToken(jwt), (int)_jwtOptions.ValidFor.TotalSeconds);
+        }
+
+        private object List<T>()
+        {
+            throw new NotImplementedException();
         }
 
         private static ClaimsIdentity GenerateClaimsIdentity(string id, string userName)

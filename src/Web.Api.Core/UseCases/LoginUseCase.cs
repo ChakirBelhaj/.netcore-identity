@@ -40,7 +40,7 @@ namespace Web.Api.Core.UseCases
                         await _userRepository.Update(user);
 
                         // generate access token
-                        outputPort.Handle(new LoginResponse(await _jwtFactory.GenerateEncodedToken(user.IdentityId, user.UserName), refreshToken, true));
+                        outputPort.Handle(new LoginResponse(await _jwtFactory.GenerateEncodedToken(user.IdentityId, user.UserName, user), refreshToken, true));
                         return true;
                     }
                 }

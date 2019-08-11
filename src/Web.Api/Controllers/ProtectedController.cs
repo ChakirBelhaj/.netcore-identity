@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Api.Controllers
 {
-    [Authorize(Policy = "ApiUser")]
+    [Authorize(Policy = "Reader")]
     [Route("api/[controller]")]
     [ApiController]
     public class ProtectedController : ControllerBase
@@ -12,7 +12,17 @@ namespace Web.Api.Controllers
         [HttpGet]
         public IActionResult Home()
         {
-            return new OkObjectResult(new { result = true });
+            string test = "";
+            foreach (var claim in User.Claims)
+            {
+                test += " ";
+                test += claim.Type;
+                test += " = ";
+                test += claim.Value;
+                test += " ; ";
+            }
+
+            return new OkObjectResult(new { result = test });
         }
     }
 }

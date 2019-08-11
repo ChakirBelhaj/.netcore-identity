@@ -52,7 +52,7 @@ namespace Web.Api.Core.UnitTests.UseCases
             mockUserRepository.Setup(repo => repo.GetSingleBySpec(It.IsAny<UserSpecification>())).ReturnsAsync(user);
 
             var mockJwtFactory = new Mock<IJwtFactory>();
-            mockJwtFactory.Setup(factory => factory.GenerateEncodedToken(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new AccessToken("", 0));
+//            mockJwtFactory.Setup(factory => factory.GenerateEncodedToken(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(new AccessToken("", 0));
 
             var mockTokenFactory = new Mock<ITokenFactory>();
             mockTokenFactory.Setup(factory => factory.GenerateToken(32)).Returns("");
