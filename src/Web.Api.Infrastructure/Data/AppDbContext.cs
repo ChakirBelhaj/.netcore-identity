@@ -18,6 +18,7 @@ namespace Web.Api.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(ConfigureUser);
+
         }
 
         public void ConfigureUser(EntityTypeBuilder<User> builder)
@@ -26,7 +27,7 @@ namespace Web.Api.Infrastructure.Data
             //EF access the RefreshTokens collection property through its backing field
             navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
 
-            builder.Ignore(b => b.Email);
+//            builder.Ignore(b => b.Email);
             builder.Ignore(b => b.PasswordHash);
         }
 
